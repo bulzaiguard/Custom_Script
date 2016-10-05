@@ -39,7 +39,7 @@ function chatLog(msg){
 
 function getNigtcore331StyleSheet(){
 	cssdocs = document.styleSheets;
-	foreach(var i = 0; i< cssdocs.length;i++){
+	for(var i = 0; i< cssdocs.length;i++){
 		if(cssdocs[i].ownerNode.baseURI === "https://plug.dj/nightcore-331"){
 			return cssdocs[i];
 		}
