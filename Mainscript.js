@@ -1,6 +1,3 @@
-//GNU General Public License 
-//Bulzai_guard
-
 var mediaInfo;
 var user;
 var notifyLogger = true;
@@ -164,7 +161,7 @@ API.on(API.CHAT_COMMAND, function(value){
 		mentionlist = new Array();
 	}
 	
-	else if(value1 === "NLogger"){
+	else if(value1 === "Nlogger"){
 		notifyLogger = !notifyLogger;		
 		chatLog("notifyLogger is now " + notifyLogger);
 		
