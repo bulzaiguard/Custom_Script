@@ -5,8 +5,8 @@ var debug = true;
 var showhiddenchat = false;
 var autojoin = false;
 var mentionlist = new Array();
-var staffchecker = false;
-var stafflist;
+//var staffchecker = false;
+//var stafflist;
 var autojoinAmount = undefined;
 
 
@@ -62,13 +62,13 @@ API.on(API.CHAT, function(message){
 	}
 	
 	//probably never going to happen
-	if(staffchecker){
+	/*if(staffchecker){
 		for(var i =0; i< stafflist.length;i++){			
 			if(message.un === stafflist[i].name){
 				
 			}
 		}		
-	}
+	}*/
 	
 	if(notifyLogger){		
 		if(message.type === "mention" && message.un != undefined){
@@ -176,6 +176,7 @@ API.on(API.CHAT_COMMAND, function(value){
 		};
 	}
 	
+	//not needed anymore toaster has the !staff command for resdj (nightcore-331)
 	/*else if(value1 ==="getStaff"){
 			stafflist = API.getStaff();
 			console.log(stafflist);
