@@ -16,7 +16,7 @@ var autojoinAmount = undefined;
 //$('#chat-messages').append('<div class="cm message' + message.un + 'data-cid="8067032-1475604572587"><div class="badge-box clickable"><i class="bdg bdg-seab07"></i>	</div>	<div class="msg' +message.cid+ '">		<div class="from dj">			<i class="icon icon-chat-dj"></i>			<span class="un clickable">' +message.un+ '</span>			<span class="timestamp" style="display: inline;">' +message.timestamp+ '</span>		</div>		<div class="text">' +message.message+'</div></div></div>');
 
 function showInChat(message){
-	$('#chat-messages').append('<div class="cm message' + message.un + 'data-cid="8067032-1475604572587" style="opacity: 0.5;"><div class="badge-box clickable"><i class="bdg bdg-seab07"></i>	</div>	<div class="msg' +message.cid+ '">		<div class="from dj">			<i class="icon icon-chat-dj"></i>			<span class="un clickable">' +message.un+ '</span>			<span class="timestamp" style="display: inline;">[Deleted] ' +message.timestamp+ '</span>		</div>		<div class="text">' +message.message+'</div></div></div>');
+	$('#chat-messages').append('<div class="cm message' + message.un + message.classes + '" data-cid="' +message.cid+ '" style="opacity: 0.5;"><div class="badge-box clickable"><i class="bdg bdg-seab07"></i>	</div>	<div class="msg' +message.cid+ '"><div class="from dj"><i class="icon icon-chat-dj"></i><span class="un clickable">' +message.un+ '</span><span class="timestamp" style="display: inline;">[Notificationlog] ' +message.timestamp+ '</span></div><div class="text">' +message.message+'</div></div></div>');
 };
 
 function log(message){
@@ -37,6 +37,44 @@ function chatLog(msg){
 	API.chatLog(msg);
 }
 
+function getNigtcore331StyleSheet(){
+	cssdocs = document.styleSheets;
+	foreach(i = 0; i< cssdocs.length;i++){
+		if(cssdocs[i].ownerNode.baseURI === "https://plug.dj/nightcore-331"){
+			return cssdocs[i];
+		}
+			
+	}
+}
+
+function getCSSRULE(styleSheet,ruleName, deleteFlag){
+	var ii = 0;
+	var cssRule = false
+    do {                                             			// For each rule in stylesheet
+        if (styleSheet.cssRules) {                    			// Browser uses cssRules?
+            cssRule = styleSheet.cssRules[ii];        			// Yes --Mozilla Style
+        } else {                                      			// Browser usses rules?
+            cssRule = styleSheet.rules[ii];            			// Yes IE style. 
+        }                                             			// End IE check.
+        if (cssRule)  {                               			// If we found a rule...
+            if (cssRule.selectorText.toLowerCase()==ruleName){ 	//  match ruleName?
+                if (deleteFlag) {             					// Yes.  Are we deleteing?
+                    if (styleSheet.cssRules) {         			// Yes, deleting...
+                       styleSheet.deleteRule(ii + 1);        	// Delete rule, Moz Style
+                    }else {                             		// Still deleting.
+                        styleSheet.removeRule(ii + 1);        	// Delete rule IE style.
+                    }                                    		// End IE check.
+                    return true;                         		// return true, class deleted.
+                } else {                                		// found and not deleting.
+                    return cssRule;                      		// return the style object.
+                }                                       		// End delete Check
+            }                                          			// End found rule name
+        }                                             			// end found cssRule
+        ii++;                                         			// Increment sub-counter
+	} while (cssRule)                                			// end While loop
+}
+
+
 function autojoinfunction(){
 	console.log("autojoin function entered")
 	var pos = API.getWaitListPosition();
@@ -54,7 +92,14 @@ function autojoinfunction(){
 };
 
 API.on(API.CHAT, function(message){
-	//debuglogger(message);
+	debuglogger(message);
+	
+	//not sure if working yet 
+	//removing annoying color Nue Houjou
+	if(message.uid === "3927729"){
+		$(".cm[data-cid^="3927729"] .msg .from .un").css('color': '#7854a9');
+	}	
+	
 	if(showhiddenchat){
 		if(message.message.charAt(0) === "!"){		
 			API.chatLog(message.un + ": " + message.message);
@@ -202,4 +247,6 @@ if(debug){
 }
 
 getUser();
+
+getCSSRULE(getNigtcore331StyleSheet,"[data-cid^="3927729"].cm .msg .from .un, #user-lists .list.room .user.role-manager.id-3927729 .name {",true)
 
