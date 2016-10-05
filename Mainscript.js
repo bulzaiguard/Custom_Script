@@ -248,5 +248,6 @@ if(debug){
 
 getUser();
 
-getCSSRULE(getNigtcore331StyleSheet,"[data-cid^="3927729"].cm .msg .from .un, #user-lists .list.room .user.role-manager.id-3927729 .name {",true)
-
+/*WIP
+getCSSRULE(getNigtcore331StyleSheet,".cm.id-3927729 .msg .from .un, #user-lists .list.room .user.role-manager.id-3927729 .name {",true)
+*/
