@@ -10,5 +10,5 @@ Command | Aliases | Description
 !urban |  | opens a new tab with the word typed after this command
 !debugtog |  | toggles the debuglogger (default on)
 !Nlist |  | prints notifications out (all the people that @ you that session)
-!Nlogger |  | deletes all current notification (so you can start fresh)
-
+!Nlogger |  | toggles notificationlogger on and off (auto on)
+!Nreset |  | deletes all current notification (so you can start fresh)

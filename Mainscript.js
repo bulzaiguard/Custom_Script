@@ -160,9 +160,12 @@ API.on(API.CHAT_COMMAND, function(value){
 		chatLog("debug is now " + debug);
 	}
 	
-	else if(value1 === "NLogger"){
-		notifyLogger = !notifyLogger;
+	else if(value1 === "Nreset"){
 		mentionlist = new Array();
+	}
+	
+	else if(value1 === "NLogger"){
+		notifyLogger = !notifyLogger;		
 		chatLog("notifyLogger is now " + notifyLogger);
 		
 	}
