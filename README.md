@@ -3,7 +3,7 @@
 Command | Aliases | Description
 --- | --- | ---
 !autojoin | !aj | Automaticly tries to join the waitlist
-!getmedia | !getVidInfo !gi | opens the polsy url from the current song with banned countries
+!getmedia | !getVidInfo , !gi | opens the polsy url from the current song with banned countries
 !download | !dl | opens a download page for the current song
 !hiddenchat |  | shows all the ! chat that gets deleted by toaster (nightcore-331) not optimal styling
 !urban |  | opens a new tab with the word typed after this command
