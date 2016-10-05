@@ -1,4 +1,5 @@
-# Custom_Script i made just for fun it adds some functionality to plug.dj
+# Custom_Script 
+Made just for fun it adds some functionality to plug.dj
 
 Command | Aliases | Description
 --- | --- | ---
