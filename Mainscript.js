@@ -1,7 +1,7 @@
 var mediaInfo;
 var user;
 var notifyLogger = true;
-var debug = true;
+var debug = false;
 var showhiddenchat = false;
 var autojoin = false;
 var mentionlist = new Array();
@@ -14,9 +14,9 @@ var autojoinAmount = undefined;
 //$("head").append('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>');
 
 //$('#chat-messages').append('<div class="cm message' + message.un + 'data-cid="8067032-1475604572587"><div class="badge-box clickable"><i class="bdg bdg-seab07"></i>	</div>	<div class="msg' +message.cid+ '">		<div class="from dj">			<i class="icon icon-chat-dj"></i>			<span class="un clickable">' +message.un+ '</span>			<span class="timestamp" style="display: inline;">' +message.timestamp+ '</span>		</div>		<div class="text">' +message.message+'</div></div></div>');
-
+ /*message.classes +*/ 
 function showInChat(message){
-	$('#chat-messages').append('<div class="cm message' + message.un + message.classes + '" data-cid="' +message.cid+ '" style="opacity: 0.5;"><div class="badge-box clickable"><i class="bdg bdg-seab07"></i>	</div>	<div class="msg' +message.cid+ '"><div class="from dj"><i class="icon icon-chat-dj"></i><span class="un clickable">' +message.un+ '</span><span class="timestamp" style="display: inline;">[Notificationlog] ' +message.timestamp+ '</span></div><div class="text">' +message.message+'</div></div></div>');
+	$('#chat-messages').append('<div class="cm message' + message.un +'" data-cid="' +message.cid+ '" style="opacity: 0.5;"><div class="badge-box clickable"><i class="bdg bdg-seab07"></i>	</div>	<div class="msg' +message.cid+ '"><div class="from dj"><i class="icon icon-chat-dj"></i><span class="un clickable">' +message.un+ '</span><span class="timestamp" style="display: inline;">[Notificationlog] ' +message.timestamp+ '</span></div><div class="text">' +message.message+'</div><div class="rcs-delete" style="display: none;">Hide</div></div></div>');
 };
 
 function log(message){
@@ -37,46 +37,55 @@ function chatLog(msg){
 	API.chatLog(msg);
 }
 
+
+
 function getNigtcore331StyleSheet(){
 	cssdocs = document.styleSheets;
 	for(var i = 0; i< cssdocs.length;i++){
 		if(cssdocs[i].ownerNode.baseURI === "https://plug.dj/nightcore-331"){
+			console.log(cssdocs[i]);
 			return cssdocs[i];
 		}
 			
 	}
+	return undefined;
 }
 
+
 function getCSSRULE(styleSheet,ruleName, deleteFlag){
-	var ii = 0;
-	var cssRule = false
-    do {                                             			// For each rule in stylesheet
-        if (styleSheet.cssRules) {                    			// Browser uses cssRules?
-            cssRule = styleSheet.cssRules[ii];        			// Yes --Mozilla Style
-        } else {                                      			// Browser usses rules?
-            cssRule = styleSheet.rules[ii];            			// Yes IE style. 
-        }                                             			// End IE check.
-        if (cssRule)  {                               			// If we found a rule...
-            if (cssRule.selectorText.toLowerCase()==ruleName){ 	//  match ruleName?
-                if (deleteFlag) {             					// Yes.  Are we deleteing?
-                    if (styleSheet.cssRules) {         			// Yes, deleting...
-                       styleSheet.deleteRule(ii + 1);        	// Delete rule, Moz Style
-                    }else {                             		// Still deleting.
-                        styleSheet.removeRule(ii + 1);        	// Delete rule IE style.
-                    }                                    		// End IE check.
-                    return true;                         		// return true, class deleted.
-                } else {                                		// found and not deleting.
-                    return cssRule;                      		// return the style object.
-                }                                       		// End delete Check
-            }                                          			// End found rule name
-        }                                             			// end found cssRule
-        ii++;                                         			// Increment sub-counter
-	} while (cssRule)                                			// end While loop
+	if(styleSheet == undefined){
+		
+	}else{	
+		var ii = 0;
+		var cssRule = false
+		do {                                             			// For each rule in stylesheet
+			if (styleSheet.cssRules) {                    			// Browser uses cssRules?
+				cssRule = styleSheet.cssRules[ii];        			// Yes --Mozilla Style
+			} else {                                      			// Browser usses rules?
+				cssRule = styleSheet.rules[ii];            			// Yes IE style. 
+			}                                             			// End IE check.
+			if (cssRule)  {                               			// If we found a rule...
+				if ( (cssRule.selectorText.toLowerCase()).includes(ruleName)){ 	//  match ruleName?
+					if (deleteFlag) {             					// Yes.  Are we deleteing?
+						if (styleSheet.cssRules) {         			// Yes, deleting...
+						   styleSheet.deleteRule(ii + 1);        	// Delete rule, Moz Style
+						}else {                             		// Still deleting.
+							styleSheet.removeRule(ii + 1);        	// Delete rule IE style.
+						}                                    		// End IE check.
+						return true;                         		// return true, class deleted.
+					} else {                                		// found and not deleting.
+						return cssRule;                      		// return the style object.
+					}                                       		// End delete Check
+				}                                          			// End found rule name
+			}                                             			// end found cssRule
+			ii++;                                         			// Increment sub-counter
+		} while (cssRule)                                			// end While loop
+	}
 }
 
 
 function autojoinfunction(){
-	console.log("autojoin function entered")
+	//console.log("autojoin function entered")
 	var pos = API.getWaitListPosition();
 	var check = API.djJoin();
 	debuglogger(pos);
@@ -84,8 +93,14 @@ function autojoinfunction(){
 		if(pos == -1){
 			var pos = API.getWaitListPosition();
 			if(pos != -1){
-				API.chatLog("succesfully joined");
-				if(autojoinAmount != undefined){autojoin = autojoin-1;}
+				API.chatLog("succesfully joined");				
+				if(autojoinAmount != undefined){
+					autojoin = autojoin-1;
+					if(autojoinAmount == 0 /*&& autojoinAmount != undefined*/){
+						autojoin = false;
+						API.chatLog("autojoin now inactive: joined selected amount of times");
+					}
+				}
 			}
 		};
 	};
@@ -96,13 +111,18 @@ API.on(API.CHAT, function(message){
 	
 	//not sure if working yet 
 	//removing annoying color Nue Houjou
-	if(message.uid === "3927729"){
-		$(".cm[data-cid^="3927729"] .msg .from .un").css('color': '#7854a9');
+	//console.log(message.uid);	
+	if(message.uid === 3927729){
+		console.log("Nue found");
+		//$(".cm.id-3927729 .msg .from .un").css('color', '#7854a9 !important');
+		//$(".id-3927729 span.un").attr('color','#7854a9' ,'important');
+		$(".id-3927729 span.un").attr('style','color:#7854a9 !important');
 	}	
 	
 	if(showhiddenchat){
 		if(message.message.charAt(0) === "!"){		
-			API.chatLog(message.un + ": " + message.message);
+			//API.chatLog(message.un + ": " + message.message);
+			showInChat(message);
 		}
 	}
 	
@@ -128,11 +148,7 @@ API.on(API.CHAT, function(message){
 
 //autojoin
 API.on(API.WAIT_LIST_UPDATE, function(details){
-	debuglogger(details);
-	if(autojoinAmount == 0 && autojoinAmount != undefined){
-		autojoin = false;
-		API.chatLog("autojoin now inactive: joined selected amount of times");
-	}
+	debuglogger(details);	
 	if(autojoin && details.length <= 49){
 		console.log("autojoinfuntion started");
 		autojoinfunction();
@@ -159,7 +175,7 @@ API.on(API.CHAT_COMMAND, function(value){
 		if(autojoin){
 			autojoinAmount = words[1];
 			if (autojoinAmount == 0){
-				API.chatLog("cannot autjoin 0 times")
+				API.chatLog("cannot autojoin 0 times")
 				API.chatLog("autojoin disabled")
 				autojoin = false;
 			}
@@ -220,6 +236,27 @@ API.on(API.CHAT_COMMAND, function(value){
 			showInChat(mentionlist[i]);
 		};
 	}
+	else if(value1 === "getplaylists"){
+		getplaylistinfo();
+	}
+	else if(value1 === "logplaylists"){		
+		if(playlistarray[0] != null || playlistarray[0] != undefined){
+			playlistarray.sort(function(a, b) {
+			  var nameA = a.name.toLowerCase(); // ignore upper and lowercase
+			  var nameB = b.name.toLowerCase(); // ignore upper and lowercase
+			  if (nameA < nameB) {
+				return -1;
+			  }
+			  if (nameA > nameB) {
+				return 1;
+			  }
+
+			  // names must be equal
+			  return 0;
+			});
+			console.log(playlistarray);
+		}
+	}
 	
 	//not needed anymore toaster has the !staff command for resdj (nightcore-331)
 	/*else if(value1 ==="getStaff"){
@@ -228,6 +265,44 @@ API.on(API.CHAT_COMMAND, function(value){
 		}*/
 	
 });
+
+function getplaylistinfo(){
+	 $.ajax({
+        url: 'https://plug.dj/_/playlists',
+        dataType: 'json',
+        success: function(json) {
+            //console.log(json.data);
+			//var everything = new Array();
+			for(var i = 0; i<json.data.length; i++){
+				getsongs(json.data[i]);			
+				/*var id = json.data[i].id;
+				var currentlistname = json.data[i].name;
+				console.log(json.data[i].name);
+			*/
+			}
+			//console.log(everything);
+        }
+    });
+}
+
+var playlistarray =  new Array();
+
+function getsongs(data){
+	$.ajax({
+			url: 'https://plug.dj/_/playlists/'+data.id+'/media	',
+			dataType: 'json',
+			success: function(songs){
+				//console.log(songs.data);
+				//for(var i = 0; i<songs.data.length;i++)
+				var playlist = { name: data.name, songs: songs.data }
+				//console.log(playlist);
+				playlistarray.push(playlist);						
+			}
+	});
+}
+
+
+
 
 function arrayChatLogger(item,index){
 	chatLog(item);
@@ -248,6 +323,7 @@ if(debug){
 
 getUser();
 
-/*WIP
-getCSSRULE(getNigtcore331StyleSheet,".cm.id-3927729 .msg .from .un, #user-lists .list.room .user.role-manager.id-3927729 .name {",true)
-*/
+//WIP
+var sentence = String(".msg .from .un, #user-lists .list.room .user.role-manager.id-3927729 .name {");
+getCSSRULE(getNigtcore331StyleSheet,sentence,true)
+
