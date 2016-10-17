@@ -107,9 +107,7 @@ function autojoinfunction(){
 };
 
 API.on(API.CHAT, function(message){
-	debuglogger(message);
-	
-	//not sure if working yet 
+	debuglogger(message);	
 	//removing annoying color Nue Houjou
 	//console.log(message.uid);	
 	if(message.uid === 3927729){
@@ -228,8 +226,7 @@ API.on(API.CHAT_COMMAND, function(value){
 		
 	}
 	
-	else if(value1 === "Nlist"){
-		//mentionlist.foreach(arrayChatLogger);
+	else if(value1 === "Nlist"){		
 		debuglogger(mentionlist);
 		for(var i = 0;i<mentionlist.length;i++){
 			debuglogger(mentionlist[i]);
@@ -271,16 +268,11 @@ function getplaylistinfo(){
         url: 'https://plug.dj/_/playlists',
         dataType: 'json',
         success: function(json) {
-            //console.log(json.data);
-			//var everything = new Array();
+            //console.log(json.data);			
 			for(var i = 0; i<json.data.length; i++){
-				getsongs(json.data[i]);			
-				/*var id = json.data[i].id;
-				var currentlistname = json.data[i].name;
-				console.log(json.data[i].name);
-			*/
+				getsongs(json.data[i]);
 			}
-			//console.log(everything);
+			
         }
     });
 }
