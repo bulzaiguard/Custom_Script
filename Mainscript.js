@@ -96,6 +96,8 @@ function autojoinfunction(){
 				API.chatLog("succesfully joined");				
 				if(autojoinAmount != undefined){
 					autojoin = autojoin-1;
+					console.log(autojoinAmount +" autoplays left");
+					chatLog(autojoinAmount +" autoplays left");
 					if(autojoinAmount == 0 /*&& autojoinAmount != undefined*/){
 						autojoin = false;
 						API.chatLog("autojoin now inactive: joined selected amount of times");
@@ -150,7 +152,7 @@ API.on(API.CHAT, function(message){
 API.on(API.WAIT_LIST_UPDATE, function(details){
 	debuglogger(details);	
 	if(autojoin && details.length <= 49){
-		console.log("autojoinfuntion started");
+		//console.log("autojoinfuntion started");
 		autojoinfunction();
 	}	
 });
@@ -172,6 +174,7 @@ API.on(API.CHAT_COMMAND, function(value){
 	
 	if(value1 === "autojoin" || value1 === "aj"){		
 		if(words[1] == undefined){autojoin = !autojoin;}
+		else{autojoin = true;}
 		if(autojoin){
 			autojoinAmount = words[1];
 			if (autojoinAmount == 0){
@@ -224,8 +227,7 @@ API.on(API.CHAT_COMMAND, function(value){
 	
 	else if(value1 === "Nlogger"){
 		notifyLogger = !notifyLogger;		
-		chatLog("notifyLogger is now " + notifyLogger);
-		
+		chatLog("notifyLogger is now " + notifyLogger);		
 	}
 	
 	else if(value1 === "Nlist"){
