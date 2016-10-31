@@ -12,3 +12,6 @@ Command | Aliases | Description
 !Nlist |  | prints notifications out (all the people that @ you that session)
 !Nlogger |  | toggles notificationlogger on and off (auto on)
 !Nreset |  | deletes all current notification (so you can start fresh)
+!pettog |  | toggles automatic answering to pets
+!abletToPetCheck |  | enables checking for who can pet you (hardcoded and not working DON'T USE)
+!petmessage |  | changes your petmessage
