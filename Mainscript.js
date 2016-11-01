@@ -3,11 +3,12 @@ var CurrentUser, ableToPet;
 var notifyLogger = true;
 var debug = false;
 var showhiddenchat = false;
-var autojoin = false, pets = false;
+var autojoin = false;
 var mentionlist = new Array();
 //var staffchecker = false;
 //var stafflist;
 var autojoinAmount = undefined;
+var abletToPetCheck = true, pets = true;
 var petmessage = "/me purrs"
 var specialDaphnePet = "/me purrs :thinking_face: treat her girly :thinking_face:"
 
@@ -242,8 +243,8 @@ API.on(API.CHAT_COMMAND, function (value) {
 	}
 
 	else if(value1 === "pettog"){
-		pet = !pet;
-		if(pet){
+		pets = !pets;
+		if(pets){
 			chatLog("petting is now enabled")
 		}
 		else{
@@ -262,7 +263,7 @@ API.on(API.CHAT_COMMAND, function (value) {
 	else if (value1 === "petmessage") {
 		if (words[1] != null || words[1] != undefined) {
 			petmessage = words[1];
-			for(var i = 1; i < words.length;i++){
+			for(var i = 2; i < words.length;i++){
 				petmessage += " " + words[i];
 			}
 			chatLog('Petmessage is now: ' + petmessage);
