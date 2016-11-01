@@ -1,20 +1,15 @@
 var mediaInfo;
-var CurrentUser, ableToPet;
+var CurrentUser;
 var notifyLogger = true;
 var debug = false;
 var showhiddenchat = false;
 var autojoin = false;
 var mentionlist = new Array();
-//var staffchecker = false;
-//var stafflist;
 var autojoinAmount = undefined;
 var abletToPetCheck = true, pets = true;
 var petmessage = "/me purrs"
 var specialDaphnePet = "/me purrs :thinking_face: treat her girly :thinking_face:"
-
-//animedevs thingy for reloading
-/*API.sendChat("! reloading"); setTimeout(function () { location.reload(true); }, 1000); }*/
-
+var ableToPetList = ["S0M3DUDE", "Daphne-chan", "bulzai_guard", "bulzai_test", "AnimeDev"];
 
 //$("head").append('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>');
 
@@ -42,49 +37,6 @@ function chatLog(msg) {
 	API.chatLog(msg);
 }
 
-function getNigtcore331StyleSheet() {
-	cssdocs = document.styleSheets;
-	for (var i = 0; i < cssdocs.length; i++) {
-		if (cssdocs[i].ownerNode.baseURI === "https://plug.dj/nightcore-331") {
-			console.log(cssdocs[i]);
-			return cssdocs[i];
-		}
-
-	}
-	return undefined;
-}
-
-function getCSSRULE(styleSheet, ruleName, deleteFlag) {
-	if (styleSheet == undefined) {
-
-	} else {
-		var ii = 0;
-		var cssRule = false
-		do {                                             			// For each rule in stylesheet
-			if (styleSheet.cssRules) {                    			// Browser uses cssRules?
-				cssRule = styleSheet.cssRules[ii];        			// Yes --Mozilla Style
-			} else {                                      			// Browser usses rules?
-				cssRule = styleSheet.rules[ii];            			// Yes IE style. 
-			}                                             			// End IE check.
-			if (cssRule) {                               			// If we found a rule...
-				if ((cssRule.selectorText.toLowerCase()).includes(ruleName)) { 	//  match ruleName?
-					if (deleteFlag) {             					// Yes.  Are we deleteing?
-						if (styleSheet.cssRules) {         			// Yes, deleting...
-							styleSheet.deleteRule(ii + 1);        	// Delete rule, Moz Style
-						} else {                             		// Still deleting.
-							styleSheet.removeRule(ii + 1);        	// Delete rule IE style.
-						}                                    		// End IE check.
-						return true;                         		// return true, class deleted.
-					} else {                                		// found and not deleting.
-						return cssRule;                      		// return the style object.
-					}                                       		// End delete Check
-				}                                          			// End found rule name
-			}                                             			// end found cssRule
-			ii++;                                         			// Increment sub-counter
-		} while (cssRule)                                			// end While loop
-	}
-}
-
 function autojoinfunction() {
 	//console.log("autojoin function entered")
 	var pos = API.getWaitListPosition();
@@ -101,65 +53,60 @@ function autojoinfunction() {
 					autojoin = autojoin - 1;
 					console.log(autojoinAmount + " autoplays left");
 					chatLog(autojoinAmount + " autoplays left");
-					if (autojoinAmount == 0 /*&& autojoinAmount != undefined*/) {
+					if (autojoinAmount == 0) {
 						autojoin = false;
 						API.chatLog("autojoin now inactive: joined selected amount of times");
-					}
-				}
-			}
+					};
+				};
+			};
 		};
 	};
 };
 
 API.on(API.CHAT, function (message) {
-	//debuglogger(message);	
+	//debuglogger(message);		
+	console.log(message.uid);
+
 	//removing annoying color Nue Houjou
-	//console.log(message.uid);	
 	if (message.uid === 3927729) {
-		console.log("Nue found");
-		//$(".cm.id-3927729 .msg .from .un").css('color', '#7854a9 !important');
-		//$(".id-3927729 span.un").attr('color','#7854a9' ,'important');
+		console.log("Nue found");		
 		$(".id-3927729 span.un").attr('style', 'color:#7854a9 !important');
 	}
 
 	if (showhiddenchat) {
-		if (message.message.charAt(0) === "!") {
-			//API.chatLog(message.un + ": " + message.message);
+		if (message.message.charAt(0) === "!") {			
 			showInChat(message);
 		}
 	}
-
-	//probably never going to happen
-	/*if(staffchecker){
-		for(var i =0; i< stafflist.length;i++){			
-			if(message.un === stafflist[i].name){
-				
-			}
-		}		
-	}*/
-	ableToPet = ["S0M3DUDE", "Daphne-chan", "bulzai_guard", "bulzai_test", "AnimeDev"];
 	
-	if (pets) {
-		//debuglogger("checking pets");				
-		for (var i = 0; i < ableToPet.length; i++) {
-			debuglogger(message)
-			debuglogger("user checked: " + ableToPet[i]);
-			var petCheck = "@" + ableToPet[i] + " pets @" + CurrentUser + "  :petme:";
-			debuglogger(petCheck);
-			if (message.message === petCheck) {
-				if (ableToPet[i] === "Daphne-chan" && CurrentUser === "bulzai_guard") {
-					API.sendChat();
+	//toaster UID: 12386384 
+	if (pets && message.uid == 12386384 && message.type === "mention") {		
+		debuglogger("checking pets");	
+		if (abletToPetCheck) {
+			for (var i = 0; i < ableToPetList.length; i++) {
+				debuglogger(message)
+				debuglogger("user checked: " + ableToPetList[i]);
+				var petCheck = "@" + ableToPetList[i] + " pets @" + CurrentUser + "  :petme:";
+				debuglogger(petCheck);
+				if (message.message === petCheck) {
+					if (ableToPetList[i] === "Daphne-chan" && CurrentUser === "bulzai_guard") {
+						API.sendChat();
+					}
+					else {
+						API.sendChat(petmessage);
+					}
 				}
-				else {
-					API.sendChat(petmessage);
-				}
+			}
+		}
+		else {
+			if (message.message.includes(" pets @" + CurrentUser + "  :petme:")) {
+				API.sendChat(petmessage);
 			}
 		}
 	}
 
 	if (notifyLogger) {
 		if (message.type === "mention" && message.un != undefined) {
-
 			debuglogger(message);
 			debuglogger("added a mention");
 			debuglogger(message.un + ": " + message.message);
@@ -242,28 +189,30 @@ API.on(API.CHAT_COMMAND, function (value) {
 		chatLog("debug is now " + debug);
 	}
 
-	else if(value1 === "pettog"){
+	else if (value1 === "pettog") {
 		pets = !pets;
-		if(pets){
+		if (pets) {
 			chatLog("petting is now enabled")
 		}
-		else{
+		else {
 			chatLog("petting is now disabled")
-		}		
+		}
 	}
-	else if(value1 === "abletToPetCheck"){
+
+	else if (value1 === "abletToPetCheck") {
 		abletToPetCheck = !abletToPetCheck;
-		if(abletToPetCheck){
+		if (abletToPetCheck) {
 			chatLog("abletToPetCheck is now enabled")
 		}
-		else{
+		else {
 			chatLog("abletToPetCheck is now disabled")
-		}	
+		}
 	}
+
 	else if (value1 === "petmessage") {
 		if (words[1] != null || words[1] != undefined) {
 			petmessage = words[1];
-			for(var i = 2; i < words.length;i++){
+			for (var i = 2; i < words.length; i++) {
 				petmessage += " " + words[i];
 			}
 			chatLog('Petmessage is now: ' + petmessage);
@@ -286,9 +235,11 @@ API.on(API.CHAT_COMMAND, function (value) {
 			showInChat(mentionlist[i]);
 		};
 	}
+
 	else if (value1 === "getplaylists") {
 		getplaylistinfo();
 	}
+
 	else if (value1 === "logplaylists") {
 		if (playlistarray[0] != null || playlistarray[0] != undefined) {
 			playlistarray.sort(function (a, b) {
@@ -297,26 +248,19 @@ API.on(API.CHAT_COMMAND, function (value) {
 				if (nameA < nameB) {
 					return -1;
 				}
-				if (nameA > nameB) {
+				else if (nameA > nameB) {
 					return 1;
 				}
-
 				// names must be equal
 				return 0;
 			});
 			console.log(playlistarray);
 		}
 	}
+
 	else if (value1 === "rl") {
 		location.reload(true);
-	}
-
-	//not needed anymore toaster has the !staff command for resdj (nightcore-331)
-	/*else if(value1 ==="getStaff"){
-			stafflist = API.getStaff();
-			console.log(stafflist);
-		}*/
-
+	}	
 });
 
 function getplaylistinfo() {
@@ -349,9 +293,6 @@ function getsongs(data) {
 	});
 }
 
-
-
-
 function arrayChatLogger(item, index) {
 	chatLog(item);
 }
@@ -374,10 +315,3 @@ if (debug) {
 } else {
 	API.chatLog("API program loaded");
 }
-
-
-
-//WIP
-var sentence = String(".msg .from .un, #user-lists .list.room .user.role-manager.id-3927729 .name {");
-getCSSRULE(getNigtcore331StyleSheet, sentence, true)
-
