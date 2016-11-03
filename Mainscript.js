@@ -6,10 +6,10 @@ var showhiddenchat = false;
 var autojoin = false;
 var mentionlist = new Array();
 var autojoinAmount = undefined;
-var abletToPetCheck = true, pets = true;
-var petmessage = "/me purrs"
-var specialDaphnePet = "/me purrs :thinking_face: treat her girly :thinking_face:"
-var ableToPetList = ["S0M3DUDE", "Daphne-chan", "bulzai_guard", "bulzai_test", "AnimeDev"];
+var petchecktog = true, pets = true;
+var petmessage = "/me purrs";
+var specialDaphnePet = "/me purrs :thinking_face: treat her girly :thinking_face:";
+var ableToPetList = [/*"S0M3DUDE",*/  "Daphne-chan", "bulzai_guard", "bulzai_test", "AnimeDev"];
 
 //$("head").append('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>');
 
@@ -65,32 +65,36 @@ function autojoinfunction() {
 
 API.on(API.CHAT, function (message) {
 	//debuglogger(message);		
-	console.log(message.uid);
+	debuglogger(message.uid);
 
 	//removing annoying color Nue Houjou
 	if (message.uid === 3927729) {
-		console.log("Nue found");		
+		console.log("Nue found");
 		$(".id-3927729 span.un").attr('style', 'color:#7854a9 !important');
 	}
 
 	if (showhiddenchat) {
-		if (message.message.charAt(0) === "!") {			
+		if (message.message.charAt(0) === "!") {
 			showInChat(message);
 		}
 	}
-	
-	//toaster UID: 12386384 
-	if (pets && message.uid == 12386384 && message.type === "mention") {		
-		debuglogger("checking pets");	
-		if (abletToPetCheck) {
+
+	//toaster UID: 12386384	
+	if(message.type === "mention"){debuglogger(message);}
+	if (pets && message.uid == 12386384 && message.type === "emote" && message.un != undefined) {
+		debuglogger("checking pets");
+		if (petchecktog) {
 			for (var i = 0; i < ableToPetList.length; i++) {
 				debuglogger(message)
 				debuglogger("user checked: " + ableToPetList[i]);
 				var petCheck = "@" + ableToPetList[i] + " pets @" + CurrentUser + "  :petme:";
+				debuglogger(message.message);
 				debuglogger(petCheck);
-				if (message.message === petCheck) {
+				//if (message.message === petCheck) {
+				if (message.message.indexOf(petCheck) >= 0) {
+					debuglogger("message found");
 					if (ableToPetList[i] === "Daphne-chan" && CurrentUser === "bulzai_guard") {
-						API.sendChat();
+						API.sendChat(specialDaphnePet);
 					}
 					else {
 						API.sendChat(petmessage);
@@ -199,13 +203,13 @@ API.on(API.CHAT_COMMAND, function (value) {
 		}
 	}
 
-	else if (value1 === "abletToPetCheck") {
-		abletToPetCheck = !abletToPetCheck;
-		if (abletToPetCheck) {
-			chatLog("abletToPetCheck is now enabled")
+	else if (value1 === "petchecktog") {
+		petchecktog = !petchecktog;
+		if (petchecktog) {
+			chatLog("petchecktog is now enabled")
 		}
 		else {
-			chatLog("abletToPetCheck is now disabled")
+			chatLog("petchecktog is now disabled")
 		}
 	}
 
@@ -260,7 +264,7 @@ API.on(API.CHAT_COMMAND, function (value) {
 
 	else if (value1 === "rl") {
 		location.reload(true);
-	}	
+	}
 });
 
 function getplaylistinfo() {
