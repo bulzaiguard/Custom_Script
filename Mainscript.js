@@ -1,5 +1,5 @@
 var mediaInfo;
-var CurrentUser;
+var CurrentUser, CurrentUsername;
 var notifyLogger = true;
 var debug = false;
 var showhiddenchat = false;
@@ -9,7 +9,9 @@ var autojoinAmount = undefined;
 var petchecktog = true, pets = true;
 var petmessage = "/me purrs";
 var specialDaphnePet = "/me purrs :thinking_face: treat her girly :thinking_face:";
-var ableToPetList = [/*"S0M3DUDE",*/  "Daphne-chan", "bulzai_guard", "bulzai_test", "AnimeDev"];
+var ableToPetList = ["S0M3DUDE",  "Daphne-chan", "bulzai_guard", "bulzai_test", "AnimeDev"];
+
+var deletebulzaimessage = false;
 
 //$("head").append('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>');
 
@@ -72,6 +74,15 @@ API.on(API.CHAT, function (message) {
 		console.log("Nue found");
 		$(".id-3927729 span.un").attr('style', 'color:#7854a9 !important');
 	}
+	
+	
+	if(deletebulzaimessage){
+		if(message.message.charAt(0) ==="!" && message.uid === 8067032){
+			API.moderateDeleteChat(message.cid);
+		}
+	}
+	
+	
 
 	if (showhiddenchat) {
 		if (message.message.charAt(0) === "!") {
@@ -87,13 +98,13 @@ API.on(API.CHAT, function (message) {
 			for (var i = 0; i < ableToPetList.length; i++) {
 				debuglogger(message)
 				debuglogger("user checked: " + ableToPetList[i]);
-				var petCheck = "@" + ableToPetList[i] + " pets @" + CurrentUser + "  :petme:";
+				var petCheck = "@" + ableToPetList[i] + " pets @" + CurrentUsername + "  :petme:";
 				debuglogger(message.message);
 				debuglogger(petCheck);
 				//if (message.message === petCheck) {
 				if (message.message.indexOf(petCheck) >= 0) {
 					debuglogger("message found");
-					if (ableToPetList[i] === "Daphne-chan" && CurrentUser === "bulzai_guard") {
+					if (ableToPetList[i] === "Daphne-chan" && CurrentUsername === "bulzai_guard") {
 						API.sendChat(specialDaphnePet);
 					}
 					else {
@@ -103,7 +114,7 @@ API.on(API.CHAT, function (message) {
 			}
 		}
 		else {
-			if (message.message.includes(" pets @" + CurrentUser + "  :petme:")) {
+			if (message.message.includes(" pets @" + CurrentUsername + "  :petme:")) {
 				API.sendChat(petmessage);
 			}
 		}
@@ -265,7 +276,33 @@ API.on(API.CHAT_COMMAND, function (value) {
 	else if (value1 === "rl") {
 		location.reload(true);
 	}
+	
+	//WIP
+	else if (value1 === "baka") {
+		API.sendChat("baka is babe");
+		setTimeout( function(){API.sendChat("baka is love");}, 1500 );
+		setTimeout( function(){API.sendChat("baka loves me");}, 2000 );		 
+	}
+	
+	else if(value1 === "bass"){
+		API.sendChat(":basssss::kong::kong::kong::kong:");
+	}
+	
+	else if(value1 === "rcshelpgif"){
+		API.sendChat("https://cdn.bssecure.net/img/plug/rcs-help.gif");
+	}
+	
+	else if(value1 === "autojoinhelpgif"){
+		API.sendChat("https://gyazo.com/d3870ed48592d8524134d6bcf54dd48d");
+	}
+	
+	else if(value1 === "pantsu"){
+		API.sendChat(":forsenpuke:");
+		setTimeout(function(){API.sendChat(":pantsu:");},1500);
+	}
 });
+
+
 
 function getplaylistinfo() {
 	$.ajax({
@@ -302,14 +339,14 @@ function arrayChatLogger(item, index) {
 }
 
 function getUser() {
-	var temp = API.getUser();
-	CurrentUser = temp.username;
-	if (CurrentUser === "bulzai_guard") {
+	var CurrentUser = API.getUser();
+	CurrentUsername = CurrentUser.username;
+	if (CurrentUsername === "bulzai_guard") {
 		autojoin = true;
 		debug = true;
 		pets = true;
 	}
-	console.log("@" + CurrentUser);
+	console.log("@" + CurrentUsername);
 };
 
 getUser();
@@ -318,4 +355,5 @@ if (debug) {
 	chatLog("debug on");
 } else {
 	API.chatLog("API program loaded");
+	API.chatLog("Thank you for using my script " + CurrentUsername);
 }
