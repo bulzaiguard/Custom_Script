@@ -20,6 +20,6 @@ Command | Aliases | Description
 /bass |  | spamms some rcs emotes
 /pantsu |  | don't ask me it was a request
 /baka |  | also something random and still WIP
-/rl |  | reloads the site
+/rl |  | reloads the script
 
 

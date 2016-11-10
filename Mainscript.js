@@ -65,7 +65,9 @@ function autojoinfunction() {
 	};
 };
 
-API.on(API.CHAT, function (message) {
+
+	
+function chatTrigger(message){
 	//debuglogger(message);		
 	debuglogger(message.uid);
 
@@ -129,25 +131,23 @@ API.on(API.CHAT, function (message) {
 			mentionlist.push(message)
 		}
 	}
-});
+}
 
-//autojoin
-API.on(API.WAIT_LIST_UPDATE, function (details) {
+function waitlistupdate(details){
 	//debuglogger(details);	
 	if (autojoin && details.length <= 49) {
 		//console.log("autojoinfuntion started");
 		autojoinfunction();
 	}
-});
+}
 
-//not using this anymore
-API.on(API.ADVANCE, function (details) {
+function advance(details){	
 	if (autojoin) {
 		autojoinfunction();
 	}
-});
+}
 
-API.on(API.CHAT_COMMAND, function (value) {
+function chatcommand(value){
 	debuglogger(value + ' typed as chat command');
 	var words = value.split(" ");
 	var value1 = words[0].substring(1);
@@ -274,14 +274,24 @@ API.on(API.CHAT_COMMAND, function (value) {
 	}
 
 	else if (value1 === "rl") {
-		location.reload(true);
-	}
+		//location.reload(true);
+		API.off(API.CHAT, chatTrigger);
+        API.off(API.WAIT_LIST_UPDATE, waitlistupdate);
+        API.off(API.ADVANCE, advance);
+        API.off(API.CHAT_COMMAND, chatcommand);
+		$.getScript('https://dl.dropbox.com/s/7ov18hrkpg0w40h/Mainscript.js?dl=0');
+	}	
 	
 	//WIP
-	else if (value1 === "baka") {
-		API.sendChat("baka is babe");
-		setTimeout( function(){API.sendChat("baka is love");}, 1500 );
-		setTimeout( function(){API.sendChat("baka loves me");}, 2000 );		 
+	else if (value1 === "baka") {		
+		if(CurrentUser.role > 0){
+			API.sendChat("baka is babe");
+			setTimeout( function(){API.sendChat("baka is love");}, 500 );
+			setTimeout( function(){API.sendChat("baka loves me");}, 1000 );	
+		}
+		else{
+			chatLog("you cannot use this command because of slowchat");
+		}		 
 	}
 	
 	else if(value1 === "bass"){
@@ -297,12 +307,27 @@ API.on(API.CHAT_COMMAND, function (value) {
 	}
 	
 	else if(value1 === "pantsu"){
-		API.sendChat(":forsenpuke:");
-		setTimeout(function(){API.sendChat(":pantsu:");},1500);
+		if(CurrentUser.role > 0){
+			API.sendChat(":forsenpuke:");
+			setTimeout(function(){API.sendChat(":pantsu:");},500);
+		}
+		else{
+			chatLog("you cannot use this command because of slowchat");
+		}	
 	}
-});
 
 
+}
+
+API.on(API.CHAT, chatTrigger);
+
+//autojoin
+API.on(API.WAIT_LIST_UPDATE, waitlistupdate);
+
+//not using this anymore
+API.on(API.ADVANCE, advance);
+
+API.on(API.CHAT_COMMAND, chatcommand)
 
 function getplaylistinfo() {
 	$.ajax({
@@ -339,9 +364,9 @@ function arrayChatLogger(item, index) {
 }
 
 function getUser() {
-	var CurrentUser = API.getUser();
+	CurrentUser = API.getUser();
 	CurrentUsername = CurrentUser.username;
-	if (CurrentUsername === "bulzai_guard") {
+	if (CurrentUser.id === 8067032) {
 		autojoin = true;
 		debug = true;
 		pets = true;
@@ -351,7 +376,7 @@ function getUser() {
 
 getUser();
 if (debug) {
-	API.chatLog("API testprogram loadedV6");
+	API.chatLog("API testprogram loadedV7");
 	chatLog("debug on");
 } else {
 	API.chatLog("API program loaded");
