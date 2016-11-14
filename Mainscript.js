@@ -299,11 +299,19 @@ function chatcommand(value){
 	}
 	
 	else if(value1 === "rcshelpgif"){
-		API.sendChat("https://cdn.bssecure.net/img/plug/rcs-help.gif");
+		API.sendChat("https://dl.dropboxusercontent.com/s/c46dgpkhpsgx8my/rcs%20help.gif");
 	}
 	
 	else if(value1 === "autojoinhelpgif"){
-		API.sendChat("https://gyazo.com/d3870ed48592d8524134d6bcf54dd48d");
+		API.sendChat("https://dl.dropboxusercontent.com/s/q3z0leixwq4lkfs/rcs%20autojoin%20help.gif");
+	}
+	
+	else if(value1 === "autowoothelpgif"){
+		API.sendChat("https://dl.dropboxusercontent.com/s/a7643lbl49opmw2/rcs%20autowoot%20help.gif");
+	}
+
+	else if(value1 === "roomcreatehelpgif"){
+		API.sendChat("https://dl.dropboxusercontent.com/s/7h02227zhhmjr7c/Room%20create.gif");
 	}
 	
 	else if(value1 === "pantsu"){
@@ -314,6 +322,10 @@ function chatcommand(value){
 		else{
 			chatLog("you cannot use this command because of slowchat");
 		}	
+	}
+	
+	else if(value1 === "deadchat"){
+		API.sendChat("https://dl.dropboxusercontent.com/s/bb70ru6qhix218o/a83871ffc7b2c2a4ce4c1b743113cbf01a48578271f3bc6b2380195d2bc94ed9.jpg");
 	}
 
 
@@ -370,6 +382,9 @@ function getUser() {
 		autojoin = true;
 		debug = true;
 		pets = true;
+	}
+	else if(CurrentUser.id === 5383341){
+		deletebulzaimessage = true;
 	}
 	console.log("@" + CurrentUsername);
 };

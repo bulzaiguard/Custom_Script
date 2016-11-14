@@ -17,9 +17,9 @@ Command | Aliases | Description
 /petmessage |  | changes your petmessage
 /rcshelpgif |  | gives the help gif for rcs
 /autojoinhelpgif |  | gives the help gif for activating autojoin with rcs
+/autowoothelpgif |  | gives the help gif for activating autowoot with rcs
+/roomcreatehelpgif |  | gives the help gif for creating own community
 /bass |  | spamms some rcs emotes
 /pantsu |  | don't ask me it was a request
 /baka |  | also something random and still WIP
 /rl |  | reloads the script
-
-
