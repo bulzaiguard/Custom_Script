@@ -3,6 +3,7 @@ Made just for fun it adds some functionality to plug.dj
 
 Command | Aliases | Description
 --- | --- | ---
+/showcommands |  | Opens this github site
 /autojoin | /aj | toggles the automaticly joining waitlist
 /getmedia | /getVidInfo , /gi | opens the polsy url from the current song with banned countries
 /download | /dl | opens a download page for the current song

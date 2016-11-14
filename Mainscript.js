@@ -9,9 +9,10 @@ var autojoinAmount = undefined;
 var petchecktog = true, pets = true;
 var petmessage = "/me purrs";
 var specialDaphnePet = "/me purrs :thinking_face: treat her girly :thinking_face:";
-var ableToPetList = ["S0M3DUDE",  "Daphne-chan", "bulzai_guard", "bulzai_test", "AnimeDev"];
+var ableToPetList = ["S0M3DUDE", "Daphne-chan", "bulzai_guard", "bulzai_test", "AnimeDev"];
 
 var deletebulzaimessage = false;
+var date = new Date();
 
 //$("head").append('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>');
 
@@ -20,6 +21,11 @@ var deletebulzaimessage = false;
 function showInChat(message) {
 	$('#chat-messages').append('<div class="cm message' + message.un + '" data-cid="' + message.cid + '" style="opacity: 0.5;"><div class="badge-box clickable"><i class="bdg bdg-seab07"></i>	</div>	<div class="msg' + message.cid + '"><div class="from dj"><i class="icon icon-chat-dj"></i><span class="un clickable">' + message.un + '</span><span class="timestamp" style="display: inline;">[Notificationlog] ' + message.timestamp + '</span></div><div class="text">' + message.message + '</div><div class="rcs-delete" style="display: none;">Hide</div></div></div>');
 };
+
+function showCommands() {
+	$('#chat-messages').append('<div class="cm rsshit sml message rs-log-booth-alert" id="rcs-' + date.getMilliseconds() + '" ><div class="badge-box"><i class="icon icon-chat-admin"></i></div><div class="msg"><div class="from"><span class="timestamp" style="display: inline;">8:23pm</span></div><div class="text">You can find my commands at: <a href="https://github.com/bulzaiguard/Custom_Script" target="_blank">https://github.com/bulzaiguard/Custom_Script</a></div></div><div class="rcs-delete" style="display: none;">Hide</div></div>');
+}
+
 
 function log(message) {
 	console.log(message);
@@ -66,8 +72,8 @@ function autojoinfunction() {
 };
 
 
-	
-function chatTrigger(message){
+
+function chatTrigger(message) {
 	//debuglogger(message);		
 	debuglogger(message.uid);
 
@@ -76,15 +82,15 @@ function chatTrigger(message){
 		console.log("Nue found");
 		$(".id-3927729 span.un").attr('style', 'color:#7854a9 !important');
 	}
-	
-	
-	if(deletebulzaimessage){
-		if(message.message.charAt(0) ==="!" && message.uid === 8067032){
+
+
+	if (deletebulzaimessage) {
+		if (message.message.charAt(0) === "!" && message.uid === 8067032) {
 			API.moderateDeleteChat(message.cid);
 		}
 	}
-	
-	
+
+
 
 	if (showhiddenchat) {
 		if (message.message.charAt(0) === "!") {
@@ -93,7 +99,7 @@ function chatTrigger(message){
 	}
 
 	//toaster UID: 12386384	
-	if(message.type === "mention"){debuglogger(message);}
+	if (message.type === "mention") { debuglogger(message); }
 	if (pets && message.uid == 12386384 && message.type === "emote" && message.un != undefined) {
 		debuglogger("checking pets");
 		if (petchecktog) {
@@ -133,7 +139,7 @@ function chatTrigger(message){
 	}
 }
 
-function waitlistupdate(details){
+function waitlistupdate(details) {
 	//debuglogger(details);	
 	if (autojoin && details.length <= 49) {
 		//console.log("autojoinfuntion started");
@@ -141,13 +147,13 @@ function waitlistupdate(details){
 	}
 }
 
-function advance(details){	
+function advance(details) {
 	if (autojoin) {
 		autojoinfunction();
 	}
 }
 
-function chatcommand(value){
+function chatcommand(value) {
 	debuglogger(value + ' typed as chat command');
 	var words = value.split(" ");
 	var value1 = words[0].substring(1);
@@ -276,58 +282,66 @@ function chatcommand(value){
 	else if (value1 === "rl") {
 		//location.reload(true);
 		API.off(API.CHAT, chatTrigger);
-        API.off(API.WAIT_LIST_UPDATE, waitlistupdate);
-        API.off(API.ADVANCE, advance);
-        API.off(API.CHAT_COMMAND, chatcommand);
+		API.off(API.WAIT_LIST_UPDATE, waitlistupdate);
+		API.off(API.ADVANCE, advance);
+		API.off(API.CHAT_COMMAND, chatcommand);
 		$.getScript('https://dl.dropbox.com/s/7ov18hrkpg0w40h/Mainscript.js?dl=0');
-	}	
-	
-	//WIP
-	else if (value1 === "baka") {		
-		if(CurrentUser.role > 0){
-			API.sendChat("baka is babe");
-			setTimeout( function(){API.sendChat("baka is love");}, 500 );
-			setTimeout( function(){API.sendChat("baka loves me");}, 1000 );	
-		}
-		else{
-			chatLog("you cannot use this command because of slowchat");
-		}		 
 	}
-	
-	else if(value1 === "bass"){
+
+	//WIP
+	else if (value1 === "baka") {
+		if (CurrentUser.role > 0) {
+			API.sendChat("baka is babe");
+			setTimeout(function () { API.sendChat("baka is love"); }, 500);
+			setTimeout(function () { API.sendChat("baka loves me"); }, 1000);
+		}
+		else {
+			chatLog("you cannot use this command because of slowchat");
+		}
+	}
+
+	else if (value1 === "bass") {
 		API.sendChat(":basssss::kong::kong::kong::kong:");
 	}
-	
-	else if(value1 === "rcshelpgif"){
+
+	else if (value1 === "rcshelpgif") {
 		API.sendChat("https://dl.dropboxusercontent.com/s/c46dgpkhpsgx8my/rcs%20help.gif");
 	}
-	
-	else if(value1 === "autojoinhelpgif"){
+
+	else if (value1 === "autojoinhelpgif") {
 		API.sendChat("https://dl.dropboxusercontent.com/s/q3z0leixwq4lkfs/rcs%20autojoin%20help.gif");
 	}
-	
-	else if(value1 === "autowoothelpgif"){
+
+	else if (value1 === "autowoothelpgif") {
 		API.sendChat("https://dl.dropboxusercontent.com/s/a7643lbl49opmw2/rcs%20autowoot%20help.gif");
 	}
 
-	else if(value1 === "roomcreatehelpgif"){
+	else if (value1 === "roomcreatehelpgif") {
 		API.sendChat("https://dl.dropboxusercontent.com/s/7h02227zhhmjr7c/Room%20create.gif");
 	}
-	
-	else if(value1 === "pantsu"){
-		if(CurrentUser.role > 0){
+
+	else if (value1 === "pantsu") {
+		if (CurrentUser.role > 0) {
 			API.sendChat(":forsenpuke:");
-			setTimeout(function(){API.sendChat(":pantsu:");},500);
+			setTimeout(function () { API.sendChat(":pantsu:"); }, 500);
 		}
-		else{
+		else {
 			chatLog("you cannot use this command because of slowchat");
-		}	
+		}
 	}
-	
-	else if(value1 === "deadchat"){
+
+	else if (value1 === "deadchat") {
 		API.sendChat("https://dl.dropboxusercontent.com/s/bb70ru6qhix218o/a83871ffc7b2c2a4ce4c1b743113cbf01a48578271f3bc6b2380195d2bc94ed9.jpg");
 	}
 
+	/*else if (value1 === "commands") {
+		var uri = "https://github.com/bulzaiguard/Custom_Script"
+		window.open(uri);
+	}*/
+
+	else if (value1 === "showcommands") {
+		showCommands();
+	}
 
 }
 
@@ -383,7 +397,7 @@ function getUser() {
 		debug = true;
 		pets = true;
 	}
-	else if(CurrentUser.id === 5383341){
+	else if (CurrentUser.id === 5383341) {
 		deletebulzaimessage = true;
 	}
 	console.log("@" + CurrentUsername);
