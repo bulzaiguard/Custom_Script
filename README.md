@@ -1,5 +1,6 @@
 # Custom_Script 
-Made just for fun it adds some functionality to plug.dj
+Made just for fun it adds some functionality to plug.dj.
+These commants might need RCS to show certain things.
 
 Command | Aliases | Description
 --- | --- | ---
@@ -22,5 +23,5 @@ Command | Aliases | Description
 /roomcreatehelpgif |  | gives the help gif for creating own community
 /bass |  | spamms some rcs emotes
 /pantsu |  | don't ask me it was a request
-/baka |  | also something random and still WIP
+/baka |  | also something random
 /rl |  | reloads the script
