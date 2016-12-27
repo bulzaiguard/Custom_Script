@@ -11,8 +11,10 @@ var petmessage = "/me purrs";
 var specialDaphnePet = "/me purrs :thinking_face: treat her girly :thinking_face:";
 var ableToPetList = ["S0M3DUDE", "Daphne-chan", "bulzai_guard", "bulzai_test", "AnimeDev"];
 
-var deletebulzaimessage = false;
+var deletemessage = false;
 var date = new Date();
+var bot = false;
+var autoreloadbugfix = false;
 
 //$("head").append('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>');
 
@@ -32,7 +34,7 @@ function log(message) {
 }
 
 function debuglogger(message) {
-	if (debug == true) {
+	if (debug) {
 		console.log(message);
 	}
 }
@@ -49,7 +51,7 @@ function autojoinfunction() {
 	//console.log("autojoin function entered")
 	var pos = API.getWaitListPosition();
 	var check = API.djJoin();
-	debuglogger(pos);
+	debuglogger("waitlistposition: "+pos);
 	if (check == 0) {
 		//console.log(pos);
 		if (pos == -1) {
@@ -72,10 +74,12 @@ function autojoinfunction() {
 };
 
 
-
+var afkcounter = false;
+var afktimeout;
 function chatTrigger(message) {
 	//debuglogger(message);		
-	debuglogger(message.uid);
+	debuglogger("message UID: "+ message.uid);
+	var words = message.message.split(" ");
 
 	//removing annoying color Nue Houjou
 	if (message.uid === 3927729) {
@@ -83,14 +87,32 @@ function chatTrigger(message) {
 		$(".id-3927729 span.un").attr('style', 'color:#7854a9 !important');
 	}
 
-
-	if (deletebulzaimessage) {
-		if (message.message.charAt(0) === "!" && message.uid === 8067032) {
+	if (deletemessage) {
+		/*if(CurrentUser == undefined){
+			CurrentUser = API.getUser();
+		}*/		
+		if (message.message.charAt(0) === "!" && message.uid === 8067032 && !(CurrentUsername === "bulzai_guard") ) {
+			API.moderateDeleteChat(message.cid);
+		}		
+		else if(CurrentUser.role > 1 && message.message.charAt(0) === "$" && (message.uid === 17002889 || message.uid === 21102762) && CurrentUsername === "bulzai_guard"){
 			API.moderateDeleteChat(message.cid);
 		}
 	}
-
-
+	
+	//WIP
+	/*if(message.uid === 8067032 && CurrentUsername === "bulzai_guard" && !(message.message === "!busy")){
+		if(afkcounter){
+			clearTimeout(afktimeout);
+			console.log("timer cleared");
+		}
+		afkcounter = true;
+		//setTimeout(function(){console.log("15mins past")},900000)
+		afktimeout = setTimeout(sendbusy,1800000);	
+		afkcounter = true;
+		console.log('setTimeout started');
+	}else if(message.uid === 8067032 && CurrentUsername === "bulzai_guard" && message.message === "!afk"){
+		clearTimeout(afktimeout);
+	}*/
 
 	if (showhiddenchat) {
 		if (message.message.charAt(0) === "!") {
@@ -99,7 +121,7 @@ function chatTrigger(message) {
 	}
 
 	//toaster UID: 12386384	
-	if (message.type === "mention") { debuglogger(message); }
+	if (message.type === "mention") { debuglogger("mentionmessage: " + message); }
 	if (pets && message.uid == 12386384 && message.type === "emote" && message.un != undefined) {
 		debuglogger("checking pets");
 		if (petchecktog) {
@@ -112,19 +134,50 @@ function chatTrigger(message) {
 				//if (message.message === petCheck) {
 				if (message.message.indexOf(petCheck) >= 0) {
 					debuglogger("message found");
-					if (ableToPetList[i] === "Daphne-chan" && CurrentUsername === "bulzai_guard") {
+					/*if (ableToPetList[i] === "Daphne-chan" && CurrentUsername === "bulzai_guard") {
 						API.sendChat(specialDaphnePet);
 					}
-					else {
+					else {*/
 						API.sendChat(petmessage);
-					}
+					//}
 				}
 			}
-		}
+		}		
 		else {
 			if (message.message.includes(" pets @" + CurrentUsername + "  :petme:")) {
 				API.sendChat(petmessage);
 			}
+		}
+		debuglogger("---------")
+	}
+	/*
+	debuglogger(words);
+	debuglogger(message.type);	
+	debuglogger(words[1]);
+	debuglogger(words[1] === "log");
+	debuglogger(message.type === "mention");
+	debuglogger(bot);
+	*/
+	if(bot && message.type === "mention" && (message.uid === 8067032 /*|| message.uid === 5383341*/)){		
+		var say=words[3];
+		for (var i = 4; i < words.length; i++) {
+			say += " " + words[i];
+		}
+		if(words[2] === "say"){
+			if(say.charAt(0) === "/"){
+				chatcommand(say);
+			}
+			else{			
+				API.sendChat(say);
+			}
+		}
+		else if(words[2] === "log"){
+			API.sendLog(say);
+		}
+		else if(words[2] === "PP?" && message.uid != 5383341){
+			CurrentUser = API.getUser();
+			var PP = CurrentUser.pp;
+			API.sendChat("$ I have:" + PP + " Plug points")
 		}
 	}
 
@@ -139,6 +192,10 @@ function chatTrigger(message) {
 	}
 }
 
+function sendbusy(){
+	API.sendChat("!busy");
+}
+
 function waitlistupdate(details) {
 	//debuglogger(details);	
 	if (autojoin && details.length <= 49) {
@@ -151,15 +208,21 @@ function advance(details) {
 	if (autojoin) {
 		autojoinfunction();
 	}
+	if(autoreloadbugfix){
+		setTimeout(function(){
+			$('#playback-controls .button.refresh').click();
+		}, 1000);
+	}
 }
 
 function chatcommand(value) {
 	debuglogger(value + ' typed as chat command');
 	var words = value.split(" ");
 	var value1 = words[0].substring(1);
-
+	
+	debuglogger("chatcommand array:")
 	debuglogger(words);
-	debuglogger(value1);
+	debuglogger("actual command: " + value1);
 
 	if (value1 === "autojoin" || value1 === "aj") {
 		if (words[1] == undefined) { autojoin = !autojoin; }
@@ -223,10 +286,10 @@ function chatcommand(value) {
 	else if (value1 === "petchecktog") {
 		petchecktog = !petchecktog;
 		if (petchecktog) {
-			chatLog("petchecktog is now enabled")
+			chatLog("pet user checking is now enabled");
 		}
 		else {
-			chatLog("petchecktog is now disabled")
+			chatLog("pet user checking is now disabled");
 		}
 	}
 
@@ -250,11 +313,13 @@ function chatcommand(value) {
 	}
 
 	else if (value1 === "Nlist") {
+		debuglogger("mentionlist:")
 		debuglogger(mentionlist);
 		for (var i = 0; i < mentionlist.length; i++) {
 			debuglogger(mentionlist[i]);
 			showInChat(mentionlist[i]);
 		};
+		debuglogger("---------")
 	}
 
 	else if (value1 === "getplaylists") {
@@ -285,6 +350,7 @@ function chatcommand(value) {
 		API.off(API.WAIT_LIST_UPDATE, waitlistupdate);
 		API.off(API.ADVANCE, advance);
 		API.off(API.CHAT_COMMAND, chatcommand);
+		clearTimeout(afktimeout);
 		$.getScript('https://dl.dropbox.com/s/7ov18hrkpg0w40h/Mainscript.js?dl=0');
 	}
 
@@ -301,7 +367,7 @@ function chatcommand(value) {
 	}
 
 	else if (value1 === "bass") {
-		API.sendChat(":basssss::kong::kong::kong::kong:");
+		API.sendChat(":kong: :kong: :basssss: :kong: :kong:");
 	}
 
 	else if (value1 === "rcshelpgif") {
@@ -318,6 +384,10 @@ function chatcommand(value) {
 
 	else if (value1 === "roomcreatehelpgif") {
 		API.sendChat("https://dl.dropboxusercontent.com/s/7h02227zhhmjr7c/Room%20create.gif");
+	}
+	
+	else if (value1 === "roomleavehelpgif"){
+		API.sendChat("https://dl.dropboxusercontent.com/s/oy728ndz3ccdg5k/leavecommunty%20help.gif");
 	}
 
 	else if (value1 === "pantsu") {
@@ -342,6 +412,32 @@ function chatcommand(value) {
 	else if (value1 === "showcommands") {
 		showCommands();
 	}
+	
+	else if (value1 === "nekolove"){
+		API.sendChat(":4neko: :nekohype: :nekospin: :nekopraise:");
+	}
+	
+	else if (value1 === "viva"){
+		API.sendChat("https://dl.dropboxusercontent.com/s/s8mxq6s7oowzy1f/viva.gif");
+	}
+	
+	else if (value1 === "kurumispin"){
+		API.sendChat("https://dl.dropboxusercontent.com/s/empbwfimzm387f0/kurumispin.gif");
+	}
+	
+	else if(value1 === "gasm"){
+		API.sendChat(":ramkiss::cowgasm::swtgasm::alicegasm::fowgasm::cirgasm::schygasm::nyagasm::remkiss:");
+	}
+	else if(value1 === "fix"){
+		autoreloadbugfix = !autoreloadbugfix;
+		if(autoreloadbugfix){
+			chatLog("fix is now enabled");
+		}else{
+			chatLog("fix is now disabled");
+		}		
+	}
+	
+	
 
 }
 
@@ -356,13 +452,14 @@ API.on(API.ADVANCE, advance);
 API.on(API.CHAT_COMMAND, chatcommand)
 
 function getplaylistinfo() {
+	playlistarray = new Array();
 	$.ajax({
 		url: 'https://plug.dj/_/playlists',
 		dataType: 'json',
 		success: function (json) {
 			//console.log(json.data);			
 			for (var i = 0; i < json.data.length; i++) {
-				getsongs(json.data[i]);
+				setTimeout(getsongs(json.data[i]),i * 1000);
 			}
 
 		}
@@ -390,24 +487,44 @@ function arrayChatLogger(item, index) {
 }
 
 function getUser() {
-	CurrentUser = API.getUser();
+	CurrentUser = API.getUser();	
 	CurrentUsername = CurrentUser.username;
 	if (CurrentUser.id === 8067032) {
 		autojoin = true;
 		debug = true;
 		pets = true;
+		petchecktog=false;
+		deletemessage = true;		
 	}
 	else if (CurrentUser.id === 5383341) {
-		deletebulzaimessage = true;
+		deletemessage = false;
+		petchecktog=false;
+		bot = true;
 	}
+	else if(CurrentUser.id === 17002889){
+		bot = true;
+		debug = false;
+		
+	}
+	debuglogger(CurrentUser);
 	console.log("@" + CurrentUsername);
 };
 
 getUser();
+
 if (debug) {
-	API.chatLog("API testprogram loadedV7");
+	API.chatLog("API testprogram loadedV1");
 	chatLog("debug on");
 } else {
 	API.chatLog("API program loaded");
 	API.chatLog("Thank you for using my script " + CurrentUsername);
 }
+if(pets){
+		chatLog("petting enabled")
+		if (petchecktog) {
+			chatLog("pet user checking is now enabled");
+		}
+		else {
+			chatLog("pet user checking is now disabled");
+		}
+	}
