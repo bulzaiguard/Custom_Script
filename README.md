@@ -25,3 +25,5 @@ Command | Aliases | Description
 /pantsu |  | don't ask me it was a request
 /baka |  | also something random
 /rl |  | reloads the script
+/fix |  | small script that reloads the song after 1 second to fix the video not playing bug
+
